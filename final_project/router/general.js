@@ -3,7 +3,8 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-const axios = require('axios'); // Ensure you have Axios installed
+const axios = require('axios'); 
+const API_URL = 'https://example.com/api/books';
 
 public_users.post("/register", (req, res) => {
     const { username, password } = req.body; // Destructure username and password from request body
