@@ -5,10 +5,10 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username)=>{ //returns boolean
-//write code to check is the username is valid
-const userExists = users.some(user =>user.username == username);
-return !userExits;
+const isValid = (username) => { // returns boolean
+    // Check if the username is valid
+    const userExists = users.some(user => user.username === username); // Corrected to userExists
+    return !userExists; // Return true if the user does not exist
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
@@ -53,6 +53,32 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   return res.status(200).json({ message: "Review added successfully!", reviews: book.reviews });
 });
+
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn; // Get the ISBN from the request parameters
+    const { username } = req.body; // Extract username from the request body
+
+    // Find the book by its ISBN
+    const book = books[isbn];
+
+    if (!book) {
+        return res.status(404).json({ message: "Book not found." });
+    }
+
+    // Find the review index for the user
+    const reviewIndex = book.reviews.findIndex(r => r.username === username);
+    if (reviewIndex === -1) {
+        return res.status(404).json({ message: "Review not found for this user." });
+    }
+
+    // Remove the review
+    book.reviews.splice(reviewIndex, 1);
+
+    return res.status(200).json({ message: "Review deleted successfully!", reviews: book.reviews });
+});
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
